@@ -35,7 +35,6 @@
             margin: 0;
         }
         
-        /* Smooth Background Transitions */
         .bg-gradient {
             position: fixed;
             inset: 0;
@@ -55,20 +54,12 @@
             transition: transform 0.3s ease, background 0.3s ease;
         }
 
-        /* Screen Transitions */
         .page-enter-active, .page-leave-active {
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .page-enter-from {
-            opacity: 0;
-            transform: translateY(20px) scale(0.98);
-        }
-        .page-leave-to {
-            opacity: 0;
-            transform: translateY(-20px) scale(1.02);
-        }
+        .page-enter-from { opacity: 0; transform: translateY(20px) scale(0.98); }
+        .page-leave-to { opacity: 0; transform: translateY(-20px) scale(1.02); }
 
-        /* Emoji Dynamics */
         .emoji-main {
             font-size: 130px;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s ease;
@@ -79,44 +70,19 @@
         .glow-red { filter: drop-shadow(0 0 45px var(--red)); }
         .glow-pink { filter: drop-shadow(0 0 45px var(--pink)); }
         
-        /* Slap Animation */
-        .slap-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0;
-        }
-        .hand-left {
-            animation: slap-left 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            display: inline-block;
-        }
-        .hand-right {
-            animation: slap-right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            display: inline-block;
-        }
-        @keyframes slap-left {
-            0% { transform: translateX(-150px) scaleX(-1); opacity: 0; }
-            100% { transform: translateX(0px) scaleX(-1); opacity: 1; }
-        }
-        @keyframes slap-right {
-            0% { transform: translateX(150px); opacity: 0; }
-            100% { transform: translateX(0px); opacity: 1; }
-        }
+        .slap-container { display: flex; justify-content: center; align-items: center; }
+        .hand-left { animation: slap-left 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; display: inline-block; }
+        .hand-right { animation: slap-right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; display: inline-block; }
+        
+        @keyframes slap-left { 0% { transform: translateX(-150px) scaleX(-1); opacity: 0; } 100% { transform: translateX(0px) scaleX(-1); opacity: 1; } }
+        @keyframes slap-right { 0% { transform: translateX(150px); opacity: 0; } 100% { transform: translateX(0px); opacity: 1; } }
 
-        /* Pulse & Pop */
         .heart-pulse { animation: heart-beat 1s infinite cubic-bezier(0.4, 0, 0.6, 1); }
-        @keyframes heart-beat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-        }
+        @keyframes heart-beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
 
         .kiss-anim { animation: kiss-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-        @keyframes kiss-pop {
-            0% { transform: scale(0) rotate(-15deg); opacity: 0; }
-            100% { transform: scale(1.3) rotate(0); opacity: 1; }
-        }
+        @keyframes kiss-pop { 0% { transform: scale(0) rotate(-15deg); opacity: 0; } 100% { transform: scale(1.3) rotate(0); opacity: 1; } }
 
-        /* Overlay Fade */
         .fade-overlay-enter-active, .fade-overlay-leave-active { transition: opacity 0.4s ease; }
         .fade-overlay-enter-from, .fade-overlay-leave-to { opacity: 0; }
     </style>
@@ -126,7 +92,7 @@
 <div id="app" class="h-screen w-full flex flex-col items-center justify-between p-8 relative overflow-hidden">
     <div class="bg-gradient" :class="mode ? 'theme-' + mode : 'theme-none'"></div>
 
-    <!-- Top Navigation Bar -->
+    <!-- Horní lišta -->
     <header class="w-full flex justify-between items-center z-50">
         <div class="flex items-center gap-2">
             <div :class="['w-1.5 h-1.5 rounded-full transition-colors duration-500', connected ? 'bg-green-400' : 'bg-red-500 animate-pulse']"></div>
@@ -137,30 +103,25 @@
         </div>
     </header>
 
-    <!-- App Content with Transitions -->
+    <!-- Obsah s animacemi -->
     <div class="flex-1 w-full flex flex-col items-center justify-center relative">
         <transition name="page" mode="out-in">
             
-            <!-- Step 1: Menu -->
+            <!-- Výběr -->
             <main v-if="!mode" key="menu" class="w-full flex flex-col items-center justify-center gap-5">
-                <h1 class="text-5xl font-black italic mb-10 tracking-tighter text-center uppercase leading-none">
-                    My lovie
-                </h1>
-                
+                <h1 class="text-5xl font-black italic mb-10 tracking-tighter text-center uppercase leading-none">My lovie</h1>
                 <button v-for="m in [{id:'highfive', icon:'✋', t:'Plácnutí', c:'text-yellow-400'}, {id:'hug', icon:'🫂', t:'Objetí', c:'text-red-500'}, {id:'kiss', icon:'💋', t:'Polibek', c:'text-pink-500'}]" 
                         @click="mode = m.id" 
                         class="w-full max-w-sm p-6 glass rounded-[2.2rem] flex items-center justify-between active:scale-[0.97] hover:bg-white/5">
-                    <span class="text-4xl drop-shadow-sm">{{ m.icon }}</span>
+                    <span class="text-4xl">{{ m.icon }}</span>
                     <span class="text-xl font-extrabold uppercase tracking-tight">{{ m.t }}</span>
                     <span :class="[m.c, 'text-2xl']">→</span>
                 </button>
             </main>
 
-            <!-- Step 2: Login -->
+            <!-- Spojení -->
             <main v-else-if="!joined" key="login" class="w-full max-w-xs flex flex-col items-center gap-8">
-                <button @click="mode = null" class="text-[11px] font-black opacity-30 tracking-widest uppercase mb-4 hover:opacity-100 transition-opacity">
-                    ← Zpět k výběru
-                </button>
+                <button @click="mode = null" class="text-[11px] font-black opacity-30 tracking-widest uppercase mb-4">← Zpět k výběru</button>
                 <div class="glass w-full p-10 rounded-[3rem] flex flex-col items-center gap-8">
                     <div class="w-full space-y-2">
                         <label class="text-[9px] font-bold uppercase tracking-widest opacity-30 ml-2">Zadej společný kód</label>
@@ -168,14 +129,14 @@
                                class="w-full bg-white/5 border-none p-6 rounded-2xl text-center text-5xl font-black tracking-[0.2em] outline-none focus:bg-white/10 transition-colors uppercase">
                     </div>
                     <button @click="joinRoom" 
-                            class="w-full py-6 rounded-2xl font-black text-xl active:scale-95 transition-all shadow-xl"
+                            class="w-full py-6 rounded-2xl font-black text-xl active:scale-95 transition-all"
                             :class="{'bg-yellow-400 text-black': mode==='highfive', 'bg-red-500 text-white': mode==='hug', 'bg-pink-500 text-white': mode==='kiss'}">
                         SPOJIT SE
                     </button>
                 </div>
             </main>
 
-            <!-- Step 3: Interaction -->
+            <!-- Akce -->
             <main v-else key="interaction" class="w-full h-full flex flex-col items-center justify-center">
                 <div class="absolute top-0 glass px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-white/50">
                     {{ otherActive ? 'Druhý je připraven' : 'Čekáme na sebe' }}
@@ -191,7 +152,6 @@
                     }]">
                         {{ mode === 'highfive' ? '✋' : (mode === 'hug' ? '❤️' : '💋') }}
                     </div>
-                    
                     <p class="mt-16 text-[12px] font-bold uppercase tracking-[0.5em] opacity-20 text-center px-10 leading-relaxed max-w-xs">
                         {{ mode === 'hug' ? 'Přilož telefon k srdci' : (mode === 'kiss' ? 'Kiss' : 'Plácni si!') }}
                     </p>
@@ -230,14 +190,9 @@
 </div>
 
 <script>
-    // Robustnější Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            const swCode = `
-                self.addEventListener('install', e => self.skipWaiting());
-                self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
-                self.addEventListener('fetch', e => {});
-            `;
+            const swCode = `self.addEventListener('install', e => self.skipWaiting()); self.addEventListener('activate', e => e.waitUntil(self.clients.claim())); self.addEventListener('fetch', e => {});`;
             const blob = new Blob([swCode], { type: 'text/javascript' });
             navigator.serviceWorker.register(URL.createObjectURL(blob));
         });
@@ -260,8 +215,8 @@
             let hugTimer = null;
             let heartbeatInterval = null;
 
-            const slapSound = new Audio('https://www.soundjay.com/human/sounds/slap-01.mp3');
-            const kissSound = new Audio('https://www.soundjay.com/human/sounds/kiss-01.mp3');
+            // Moderní "Tada" zvuk pro všechny akce
+            const tadaSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
 
             socket.on('connect', () => connected.value = true);
             socket.on('hand_state', (data) => {
@@ -317,11 +272,12 @@
                 if (success.value) return;
                 success.value = true;
                 
+                tadaSound.currentTime = 0;
+                tadaSound.play().catch(()=>{});
+
                 if (mode.value === 'highfive') {
-                    slapSound.play().catch(()=>{});
                     if (navigator.vibrate) navigator.vibrate([150, 50, 200]);
                 } else if (mode.value === 'kiss') {
-                    kissSound.play().catch(()=>{});
                     if (navigator.vibrate) navigator.vibrate([60, 120, 60]);
                 } else {
                     if (navigator.vibrate) navigator.vibrate([1000]);
