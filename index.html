@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HighFive ✋</title>
-    <!-- Vue.js a Socket.io knihovny -->
+    <title>HighFive & Hug ✋❤️</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --yellow: #fbbf24;
+            --red: #ef4444;
+        }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #0c0c0c;
@@ -17,110 +20,160 @@
             touch-action: none;
             overflow: hidden;
         }
-        .yellow-glow {
-            background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, rgba(12, 12, 12, 1) 80%);
+        
+        /* Glassmorphism základy */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
+
+        /* Dynamické pozadí podle režimu */
+        .bg-gradient {
+            position: fixed;
+            inset: 0;
+            transition: background 0.8s ease;
+            z-index: -1;
+        }
+        .theme-none { background: radial-gradient(circle at center, rgba(255,255,255,0.05) 0%, #0c0c0c 100%); }
+        .theme-highfive { background: radial-gradient(circle at center, rgba(251, 191, 36, 0.15) 0%, #0c0c0c 100%); }
+        .theme-hug { background: radial-gradient(circle at center, rgba(239, 68, 68, 0.15) 0%, #0c0c0c 100%); }
+
         .hand-emoji {
-            font-size: 160px;
+            font-size: 150px;
             transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             user-select: none;
-            display: inline-block;
-            cursor: pointer;
         }
-        /* Energická animace z původní verze */
-        .active-hand {
-            transform: scale(1.4) rotate(-10deg) translateY(-20px);
-            filter: drop-shadow(0 0 40px #fbbf24);
+        .active-hand { transform: scale(1.3); }
+        .glow-yellow { filter: drop-shadow(0 0 30px var(--yellow)); }
+        .glow-red { filter: drop-shadow(0 0 30px var(--red)); }
+        
+        /* Animace plácnutí */
+        .slap-pair {
+            display: flex;
+            gap: 20px;
+            animation: slap-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
-        .pulse-waiting {
-            animation: pulse-animation 1s infinite ease-in-out;
+        @keyframes slap-in {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
-        @keyframes pulse-animation {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.25); opacity: 1; filter: drop-shadow(0 0 30px #fbbf24); }
+
+        .heart-pulse {
+            animation: heart-beat 0.8s infinite;
         }
-        .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        @keyframes heart-beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
         }
-        .fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
+
+        .fade-enter-active, .fade-leave-active { transition: opacity 0.4s ease; }
         .fade-enter-from, .fade-leave-to { opacity: 0; }
     </style>
 </head>
-<body class="yellow-glow">
+<body>
 
-<div id="app" class="h-screen flex flex-col items-center justify-between p-8 relative">
+<div id="app" class="h-screen w-full flex flex-col items-center justify-between p-8 relative">
     
-    <!-- Status horní lišta -->
+    <!-- Dynamické pozadí -->
+    <div :class="['bg-gradient', mode ? 'theme-' + mode : 'theme-none']"></div>
+
+    <!-- Horní status bar -->
     <header class="w-full flex justify-between items-center z-10">
         <div class="flex items-center gap-2">
-            <div :class="['w-2 h-2 rounded-full', connected ? 'bg-yellow-400 animate-pulse' : 'bg-red-500']"></div>
-            <span class="text-[10px] uppercase tracking-[0.2em] font-bold opacity-60">
-                {{ connected ? 'System Live' : 'Connecting Server...' }}
-            </span>
+            <div :class="['w-2 h-2 rounded-full', connected ? 'bg-green-400' : 'bg-red-500 animate-pulse']"></div>
+            <span class="text-[10px] uppercase tracking-[0.2em] font-bold opacity-50">{{ connected ? 'Live' : 'Connecting' }}</span>
         </div>
-        <div v-if="joined" class="glass px-4 py-1 rounded-full text-[10px] font-bold italic">
+        <div v-if="joined" class="glass px-4 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase">
             Místnost: {{ roomId }}
         </div>
     </header>
 
-    <!-- Úvodní přihlášení -->
-    <main v-if="!joined" class="flex-1 flex flex-col items-center justify-center w-full max-w-xs">
-        <h1 class="text-6xl font-black italic mb-2 tracking-tighter">HIGH<span class="text-yellow-400">5</span></h1>
-        <p class="text-white/30 text-xs mb-10 text-center uppercase tracking-widest font-bold">Real-time Handshake</p>
+    <!-- 1. VÝBĚR REŽIMU (Glass design) -->
+    <main v-if="!mode" class="flex-1 flex flex-col items-center justify-center w-full gap-6">
+        <h1 class="text-5xl font-black italic mb-10 tracking-tighter text-center">
+            VYBER SI <br><span class="text-white/40 uppercase text-2xl tracking-[0.3em]">Moment</span>
+        </h1>
         
-        <div class="w-full space-y-4">
-            <input v-model="roomId" 
-                   maxlength="6" 
-                   type="text"
-                   placeholder="KÓD" 
-                   class="w-full bg-white/5 p-5 rounded-2xl text-center text-3xl font-black tracking-[0.4em] focus:ring-2 focus:ring-yellow-400 outline-none transition-all placeholder:opacity-20">
+        <button @click="mode = 'highfive'" class="w-full max-w-xs p-6 glass rounded-[2rem] flex items-center justify-between active:scale-95 transition-all">
+            <span class="text-4xl">✋</span>
+            <span class="text-xl font-extrabold uppercase tracking-tight">Plácnutí</span>
+            <span class="text-yellow-400 text-2xl">→</span>
+        </button>
+
+        <button @click="mode = 'hug'" class="w-full max-w-xs p-6 glass rounded-[2rem] flex items-center justify-between active:scale-95 transition-all">
+            <span class="text-4xl">🫂</span>
+            <span class="text-xl font-extrabold uppercase tracking-tight">Objetí</span>
+            <span class="text-red-500 text-2xl">→</span>
+        </button>
+    </main>
+
+    <!-- 2. LOGIN (KÓD MÍSTNOSTI) -->
+    <main v-else-if="!joined" class="flex-1 flex flex-col items-center justify-center w-full max-w-xs">
+        <button @click="mode = null" class="absolute top-20 left-8 text-[10px] font-black opacity-30 tracking-widest uppercase">← Zpět</button>
+        
+        <div class="glass w-full p-8 rounded-[2.5rem] flex flex-col items-center gap-6">
+            <div class="text-center">
+                <h2 class="text-xs font-black uppercase tracking-[0.4em] mb-2" :class="mode === 'highfive' ? 'text-yellow-400' : 'text-red-500'">
+                    {{ mode === 'highfive' ? 'HighFive Mode' : 'Hug Mode' }}
+                </h2>
+                <div class="h-1 w-8 mx-auto rounded-full" :class="mode === 'highfive' ? 'bg-yellow-400' : 'bg-red-500'"></div>
+            </div>
+
+            <input v-model="roomId" maxlength="6" placeholder="KÓD" class="w-full bg-white/5 border-none p-5 rounded-2xl text-center text-4xl font-black tracking-[0.3em] outline-none focus:ring-1 focus:ring-white/20 transition-all">
             
-            <button @click="joinRoom" 
-                    class="w-full py-5 bg-yellow-400 text-black rounded-2xl font-black text-lg shadow-xl shadow-yellow-400/20 active:scale-95 transition-transform uppercase italic">
-                SPOJIT SE
+            <button @click="joinRoom" class="w-full py-5 rounded-2xl font-black text-lg active:scale-95 transition-transform" 
+                    :class="mode === 'highfive' ? 'bg-yellow-400 text-black' : 'bg-red-500 text-white'">
+                VSTOUPIT
             </button>
         </div>
     </main>
 
-    <!-- Herní plocha -->
+    <!-- 3. HERNÍ PLOCHA -->
     <main v-else class="flex-1 flex flex-col items-center justify-center w-full relative">
-        <div class="absolute top-0 text-center">
-            <p class="text-[10px] uppercase tracking-[0.3em] font-bold text-yellow-400/50">
-                {{ otherActive ? 'Druhý už čeká!' : 'Čeká se na kontakt...' }}
-            </p>
+        <div class="absolute top-0 glass px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest">
+            {{ otherActive ? 'Druhý čeká...' : 'Čekám na kontakt' }}
         </div>
 
-        <!-- Ruka s animací -->
-        <div :class="['hand-emoji', { 'active-hand': amIActive, 'pulse-waiting': otherActive && !amIActive }]"
-             @touchstart.prevent="handleStart" 
-             @touchend.prevent="handleEnd"
-             @mousedown="handleStart"
-             @mouseup="handleEnd">
-            ✋
+        <!-- Indikátor objetí -->
+        <div v-if="mode === 'hug' && amIActive && otherActive" class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="w-64 h-64 border border-red-500/20 rounded-full flex items-center justify-center">
+                <div class="bg-red-500/20 rounded-full transition-all duration-[3000ms] ease-linear" :style="{ width: hugProgress + '%', height: hugProgress + '%' }"></div>
+            </div>
         </div>
 
-        <div class="absolute bottom-0 text-center opacity-30">
-            <p class="text-[10px] font-bold uppercase tracking-widest animate-pulse">
-                {{ amIActive ? 'Držím kontakt...' : 'Polož dlaň na displej' }}
-            </p>
+        <div :class="['hand-emoji', { 'active-hand': amIActive, 'glow-yellow': mode === 'highfive' && amIActive, 'glow-red': mode === 'hug' && amIActive }]"
+             @touchstart.prevent="startTouch" @touchend.prevent="endTouch"
+             @mousedown="startTouch" @mouseup="endTouch">
+            {{ mode === 'highfive' ? '✋' : '🫂' }}
+        </div>
+
+        <div class="absolute bottom-0 text-center opacity-30 text-[9px] font-bold uppercase tracking-[0.3em] animate-pulse">
+            {{ amIActive ? 'Nepouštěj' : 'Přilož ruku' }}
         </div>
     </main>
 
-    <!-- Success Overlay -->
+    <!-- SUCCESS OVERLAY (Glass style) -->
     <transition name="fade">
-        <div v-if="success" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-yellow-400">
-            <div class="text-black text-center animate-bounce">
-                <span class="text-9xl">⚡</span>
-                <h2 class="text-7xl font-black italic tracking-tighter">BUM!</h2>
-                <p class="font-bold uppercase tracking-widest mt-2">Plácnutí proběhlo</p>
+        <div v-if="success" class="fixed inset-0 z-50 flex items-center justify-center glass" :class="mode === 'highfive' ? 'bg-yellow-400/90' : 'bg-red-600/90'">
+            
+            <div v-if="mode === 'highfive'" class="slap-pair">
+                <span class="text-8xl">✋</span>
+                <span class="text-8xl scale-x-[-1]">✋</span>
             </div>
+
+            <div v-if="mode === 'hug'" class="flex flex-col items-center">
+                <span class="text-9xl heart-pulse">❤️</span>
+                <h2 class="text-4xl font-black mt-6 italic text-white tracking-tighter uppercase">Objetí!</h2>
+            </div>
+
         </div>
     </transition>
 
-    <footer class="w-full text-center pb-2 opacity-20 text-[8px] uppercase tracking-widest font-bold">
-        Build with Vue.js & Socket.io
+    <footer class="w-full text-center pb-2 opacity-20 text-[8px] uppercase tracking-widest font-black">
+        DoslovaAltar Studio • HighFive & Hug
     </footer>
 
 </div>
@@ -130,90 +183,96 @@
 
     createApp({
         setup() {
-            // Tvá adresa serveru na Renderu
             const SERVER_URL = 'https://highfive-server-tfow.onrender.com';
             const socket = io(SERVER_URL);
             
+            const mode = ref(null);
             const connected = ref(false);
             const joined = ref(false);
             const roomId = ref('');
             const amIActive = ref(false);
             const otherActive = ref(false);
             const success = ref(false);
+            const hugProgress = ref(0);
+            let hugTimer = null;
 
-            // Audio efekt plácnutí
             const slapSound = new Audio('https://www.soundjay.com/human/sounds/slap-01.mp3');
-            slapSound.volume = 0.5;
+            const hugSound = new Audio('https://www.soundjay.com/buttons/sounds/button-11.mp3');
 
-            socket.on('connect', () => {
-                connected.value = true;
-            });
-
+            socket.on('connect', () => connected.value = true);
             socket.on('hand_state', (data) => {
-                // Sledujeme pouze zprávy ze stejné místnosti a od jiného uživatele
                 if (data.room === roomId.value && data.userId !== socket.id) {
                     otherActive.value = data.active;
-                    if (amIActive.value && otherActive.value) {
-                        triggerSuccess();
-                    }
+                    checkLogic();
                 }
             });
 
-            const joinRoom = () => {
-                if (roomId.value.trim().length >= 3) {
-                    joined.value = true;
+            const joinRoom = () => { if (roomId.value.length >= 3) joined.value = true; };
+
+            const startTouch = () => {
+                if (success.value) return;
+                amIActive.value = true;
+                socket.emit('hand_state', { room: roomId.value, userId: socket.id, active: true });
+                checkLogic();
+            };
+
+            const endTouch = () => {
+                amIActive.value = false;
+                socket.emit('hand_state', { room: roomId.value, userId: socket.id, active: false });
+                stopHug();
+            };
+
+            const checkLogic = () => {
+                if (amIActive.value && otherActive.value) {
+                    if (mode.value === 'highfive') triggerSuccess();
+                    else startHug();
+                } else {
+                    stopHug();
                 }
             };
 
-            const handleStart = () => {
-                if (success.value) return;
-                amIActive.value = true;
-                sendState(true);
-                if (otherActive.value) triggerSuccess();
+            const startHug = () => {
+                if (hugTimer) return;
+                hugProgress.value = 0;
+                hugTimer = setInterval(() => {
+                    hugProgress.value += 3.33;
+                    if (navigator.vibrate) navigator.vibrate(40);
+                    if (hugProgress.value >= 100) {
+                        triggerSuccess();
+                        stopHug();
+                    }
+                }, 100);
             };
 
-            const handleEnd = () => {
-                amIActive.value = false;
-                sendState(false);
-            };
-
-            const sendState = (active) => {
-                socket.emit('hand_state', {
-                    room: roomId.value,
-                    userId: socket.id,
-                    active: active
-                });
+            const stopHug = () => {
+                clearInterval(hugTimer);
+                hugTimer = null;
+                hugProgress.value = 0;
             };
 
             const triggerSuccess = () => {
                 if (success.value) return;
                 success.value = true;
-
-                // Haptická odezva
-                if (navigator.vibrate) {
-                    navigator.vibrate([100, 30, 200]);
+                
+                if (mode.value === 'highfive') {
+                    slapSound.play().catch(()=>{});
+                    if (navigator.vibrate) navigator.vibrate([100, 50, 150]);
+                } else {
+                    hugSound.play().catch(()=>{});
+                    if (navigator.vibrate) navigator.vibrate(400);
                 }
 
-                // Zvuk
-                slapSound.play().catch(() => {});
-
-                // Automatický reset po úspěchu
                 setTimeout(() => {
                     success.value = false;
-                    // Reset stavů pro další pokus
                     amIActive.value = false;
-                    sendState(false);
-                }, 1500);
+                    socket.emit('hand_state', { room: roomId.value, userId: socket.id, active: false });
+                }, mode.value === 'hug' ? 3000 : 1500);
             };
 
-            return {
-                connected, joined, roomId, amIActive, otherActive, success,
-                joinRoom, handleStart, handleEnd
-            };
+            return { mode, connected, joined, roomId, amIActive, otherActive, success, hugProgress, joinRoom, startTouch, endTouch };
         }
     }).mount('#app');
 </script>
-
 </body>
 </html>
 
