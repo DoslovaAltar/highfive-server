@@ -10,15 +10,16 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="My lovie 💖">
+    <meta name="apple-mobile-web-app-title" content="My lovie">
     
-    <!-- Web Manifest s ikonou 💖 -->
-    <link rel="manifest" href="data:application/json;base64,ewogICJkZWZhdWx0X2xvY2FsZSI6ICJjcyIsCiAgIm5hbWUiOiAiTXkgbG92aWUiLAogICJzaG9ydF9uYW1lIjogIk15IGxvdmllIiwKICAic3RhcnRfdXJsIjogIi4vIiwKICAic2NvcGUiOiAiLi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzBjMGMwYyIsCiAgInRoZW1lX2NvbG9yIjogIiMwYzBjMGMiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWwsPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48dGV4dCB5PSIuOWVtIiBmb250LXNpemU9IjkwIj7wnp+GPC90ZXh0Pjwvc3ZnPiIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXNrYWJsZSIKICAgIH0KICBdCn0=">
+    <!-- Manifest s ikonou 💖 -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJmYWNlbGlmdCI6ICJjcyIsCiAgIm5hbWUiOiAiTXkgbG92aWUiLAogICJzaG9ydF9uYW1lIjogIk15IGxvdmllIiwKICAic3RhcnRfdXJsIjogIi4vIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGMwYzBjIiwKICAidGhlbWVfY29sb3IiOiAiIzBjMGMwYyIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDEwMCAxMDAiPjx0ZXh0IHk9Ii45ZW0iIGZvbnQtc2l6ZT0iOTAiPvCen4Y8L3RleHQ+PC9zdmc+IiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIiwKICAgICAgInB1cnBvc2UiOiAiYW55IgogICAgfQogIF0KfQ==">
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --yellow: #fbbf24;
@@ -31,188 +32,214 @@
             color: white;
             touch-action: none;
             overflow: hidden;
+            margin: 0;
         }
         
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
+        /* Smooth Background Transitions */
         .bg-gradient {
             position: fixed;
             inset: 0;
-            transition: background 1.5s ease;
+            transition: background 1.2s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: -1;
         }
         .theme-none { background: radial-gradient(circle at center, rgba(255,255,255,0.05) 0%, #0c0c0c 100%); }
-        .theme-highfive { background: radial-gradient(circle at center, rgba(251, 191, 36, 0.15) 0%, #0c0c0c 100%); }
-        .theme-hug { background: radial-gradient(circle at center, rgba(239, 68, 68, 0.2) 0%, #0c0c0c 100%); }
-        .theme-kiss { background: radial-gradient(circle at center, rgba(236, 72, 153, 0.2) 0%, #0c0c0c 100%); }
+        .theme-highfive { background: radial-gradient(circle at center, rgba(251, 191, 36, 0.12) 0%, #0c0c0c 100%); }
+        .theme-hug { background: radial-gradient(circle at center, rgba(239, 68, 68, 0.15) 0%, #0c0c0c 100%); }
+        .theme-kiss { background: radial-gradient(circle at center, rgba(236, 72, 153, 0.15) 0%, #0c0c0c 100%); }
 
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        /* Screen Transitions */
+        .page-enter-active, .page-leave-active {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .page-enter-from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.98);
+        }
+        .page-leave-to {
+            opacity: 0;
+            transform: translateY(-20px) scale(1.02);
+        }
+
+        /* Emoji Dynamics */
         .emoji-main {
             font-size: 130px;
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s ease;
             user-select: none;
         }
-        .active-emoji { transform: scale(1.3); }
-        .glow-yellow { filter: drop-shadow(0 0 30px var(--yellow)); }
-        .glow-red { filter: drop-shadow(0 0 40px var(--red)); }
-        .glow-pink { filter: drop-shadow(0 0 40px var(--pink)); }
+        .active-emoji { transform: scale(1.25); }
+        .glow-yellow { filter: drop-shadow(0 0 35px var(--yellow)); }
+        .glow-red { filter: drop-shadow(0 0 45px var(--red)); }
+        .glow-pink { filter: drop-shadow(0 0 45px var(--pink)); }
         
+        /* Slap Animation */
         .slap-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 100%;
-            height: 300px;
-            overflow: visible;
+            gap: 0;
         }
         .hand-left {
-            animation: slap-left 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation: slap-left 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
             display: inline-block;
         }
         .hand-right {
-            animation: slap-right 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation: slap-right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
             display: inline-block;
         }
         @keyframes slap-left {
-            0% { transform: translateX(-200px) scaleX(-1); opacity: 0; }
-            80% { transform: translateX(5px) scaleX(-1); opacity: 1; }
+            0% { transform: translateX(-150px) scaleX(-1); opacity: 0; }
             100% { transform: translateX(0px) scaleX(-1); opacity: 1; }
         }
         @keyframes slap-right {
-            0% { transform: translateX(200px); opacity: 0; }
-            80% { transform: translateX(-5px); opacity: 1; }
+            0% { transform: translateX(150px); opacity: 0; }
             100% { transform: translateX(0px); opacity: 1; }
         }
 
-        .heart-pulse { animation: heart-beat 1.2s infinite ease-in-out; }
+        /* Pulse & Pop */
+        .heart-pulse { animation: heart-beat 1s infinite cubic-bezier(0.4, 0, 0.6, 1); }
         @keyframes heart-beat {
             0%, 100% { transform: scale(1); }
-            15% { transform: scale(1.2); }
-            30% { transform: scale(1.1); }
+            50% { transform: scale(1.15); }
         }
 
-        .kiss-anim {
-            animation: kiss-pop 0.5s ease-out forwards;
-        }
+        .kiss-anim { animation: kiss-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
         @keyframes kiss-pop {
-            0% { transform: scale(0) rotate(-20deg); opacity: 0; }
-            50% { transform: scale(1.5) rotate(10deg); opacity: 1; }
-            100% { transform: scale(1.2) rotate(0); opacity: 1; }
+            0% { transform: scale(0) rotate(-15deg); opacity: 0; }
+            100% { transform: scale(1.3) rotate(0); opacity: 1; }
         }
 
-        .fade-enter-active, .fade-leave-active { transition: opacity 0.5s ease; }
-        .fade-enter-from, .fade-leave-to { opacity: 0; }
+        /* Overlay Fade */
+        .fade-overlay-enter-active, .fade-overlay-leave-active { transition: opacity 0.4s ease; }
+        .fade-overlay-enter-from, .fade-overlay-leave-to { opacity: 0; }
     </style>
 </head>
 <body :class="[mode ? 'theme-' + mode : 'theme-none']">
 
-<div id="app" class="h-screen w-full flex flex-col items-center justify-between p-8 relative">
+<div id="app" class="h-screen w-full flex flex-col items-center justify-between p-8 relative overflow-hidden">
     <div class="bg-gradient" :class="mode ? 'theme-' + mode : 'theme-none'"></div>
 
-    <!-- Header -->
+    <!-- Top Navigation Bar -->
     <header class="w-full flex justify-between items-center z-50">
         <div class="flex items-center gap-2">
-            <div :class="['w-2 h-2 rounded-full', connected ? 'bg-green-400' : 'bg-red-500 animate-pulse']"></div>
-            <span class="text-[10px] uppercase tracking-widest font-bold opacity-50">{{ connected ? 'Live' : 'Připojování' }}</span>
+            <div :class="['w-1.5 h-1.5 rounded-full transition-colors duration-500', connected ? 'bg-green-400' : 'bg-red-500 animate-pulse']"></div>
+            <span class="text-[9px] uppercase tracking-[0.2em] font-bold opacity-40">{{ connected ? 'Live' : 'Offline' }}</span>
         </div>
-        <div v-if="joined" class="glass px-4 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase">
+        <div v-if="joined" class="glass px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase text-white/60">
             {{ roomId }}
         </div>
     </header>
 
-    <!-- Menu výběru -->
-    <main v-if="!mode" class="flex-1 flex flex-col items-center justify-center w-full gap-4 z-10">
-        <h1 class="text-4xl font-black italic mb-8 tracking-tighter text-center italic uppercase">My lovie</h1>
-        
-        <button v-for="m in [{id:'highfive', icon:'✋', t:'Plácnutí', c:'text-yellow-400'}, {id:'hug', icon:'🫂', t:'Objetí', c:'text-red-500'}, {id:'kiss', icon:'💋', t:'Polibek', c:'text-pink-500'}]" 
-                @click="mode = m.id" class="w-full max-w-xs p-5 glass rounded-[2rem] flex items-center justify-between active:scale-95 transition-all">
-            <span class="text-3xl">{{ m.icon }}</span>
-            <span class="text-lg font-extrabold uppercase tracking-tight">{{ m.t }}</span>
-            <span :class="[m.c, 'text-xl']">→</span>
-        </button>
-    </main>
-
-    <!-- Login -->
-    <main v-else-if="!joined" class="flex-1 flex flex-col items-center justify-center w-full max-xs z-10">
-        <button @click="mode = null" class="absolute top-20 left-8 text-[10px] font-black opacity-30 tracking-widest uppercase">← Zpět</button>
-        <div class="glass w-full p-8 rounded-[2.5rem] flex flex-col items-center gap-6">
-            <input v-model="roomId" maxlength="6" placeholder="KÓD" class="w-full bg-white/5 border-none p-5 rounded-2xl text-center text-4xl font-black tracking-[0.3em] outline-none focus:ring-1 focus:ring-white/20">
-            <button @click="joinRoom" class="w-full py-5 rounded-2xl font-black text-lg active:scale-95 transition-transform" 
-                    :class="{'bg-yellow-400 text-black': mode==='highfive', 'bg-red-500 text-white': mode==='hug', 'bg-pink-500 text-white': mode==='kiss'}">
-                SPOJIT SE
-            </button>
-        </div>
-    </main>
-
-    <!-- Hra -->
-    <main v-else class="flex-1 flex flex-col items-center justify-center w-full relative z-10">
-        <div class="absolute top-0 glass px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest">
-            {{ otherActive ? 'Druhý je připraven' : 'Čekáme na sebe' }}
-        </div>
-
-        <div class="w-full h-full flex flex-col items-center justify-center"
-             @touchstart.prevent="startTouch" @touchend.prevent="endTouch"
-             @mousedown="startTouch" @mouseup="endTouch">
-            <div :class="['emoji-main', { 
-                'active-emoji glow-yellow': amIActive && mode==='highfive',
-                'active-emoji heart-pulse glow-red': amIActive && mode==='hug',
-                'active-emoji glow-pink': amIActive && mode==='kiss'
-            }]">
-                {{ mode === 'highfive' ? '✋' : (mode === 'hug' ? '❤️' : '💋') }}
-            </div>
+    <!-- App Content with Transitions -->
+    <div class="flex-1 w-full flex flex-col items-center justify-center relative">
+        <transition name="page" mode="out-in">
             
-            <p class="mt-12 text-[11px] font-bold uppercase tracking-[0.4em] opacity-30 text-center px-12 leading-relaxed">
-                {{ mode === 'hug' ? 'Přilož telefon k srdci' : (mode === 'kiss' ? 'Kiss' : 'Plácni si!') }}
-            </p>
-        </div>
-    </main>
+            <!-- Step 1: Menu -->
+            <main v-if="!mode" key="menu" class="w-full flex flex-col items-center justify-center gap-5">
+                <h1 class="text-5xl font-black italic mb-10 tracking-tighter text-center uppercase leading-none">
+                    My lovie
+                </h1>
+                
+                <button v-for="m in [{id:'highfive', icon:'✋', t:'Plácnutí', c:'text-yellow-400'}, {id:'hug', icon:'🫂', t:'Objetí', c:'text-red-500'}, {id:'kiss', icon:'💋', t:'Polibek', c:'text-pink-500'}]" 
+                        @click="mode = m.id" 
+                        class="w-full max-w-sm p-6 glass rounded-[2.2rem] flex items-center justify-between active:scale-[0.97] hover:bg-white/5">
+                    <span class="text-4xl drop-shadow-sm">{{ m.icon }}</span>
+                    <span class="text-xl font-extrabold uppercase tracking-tight">{{ m.t }}</span>
+                    <span :class="[m.c, 'text-2xl']">→</span>
+                </button>
+            </main>
+
+            <!-- Step 2: Login -->
+            <main v-else-if="!joined" key="login" class="w-full max-w-xs flex flex-col items-center gap-8">
+                <button @click="mode = null" class="text-[11px] font-black opacity-30 tracking-widest uppercase mb-4 hover:opacity-100 transition-opacity">
+                    ← Zpět k výběru
+                </button>
+                <div class="glass w-full p-10 rounded-[3rem] flex flex-col items-center gap-8">
+                    <div class="w-full space-y-2">
+                        <label class="text-[9px] font-bold uppercase tracking-widest opacity-30 ml-2">Zadej společný kód</label>
+                        <input v-model="roomId" maxlength="6" placeholder="0000" 
+                               class="w-full bg-white/5 border-none p-6 rounded-2xl text-center text-5xl font-black tracking-[0.2em] outline-none focus:bg-white/10 transition-colors uppercase">
+                    </div>
+                    <button @click="joinRoom" 
+                            class="w-full py-6 rounded-2xl font-black text-xl active:scale-95 transition-all shadow-xl"
+                            :class="{'bg-yellow-400 text-black': mode==='highfive', 'bg-red-500 text-white': mode==='hug', 'bg-pink-500 text-white': mode==='kiss'}">
+                        SPOJIT SE
+                    </button>
+                </div>
+            </main>
+
+            <!-- Step 3: Interaction -->
+            <main v-else key="interaction" class="w-full h-full flex flex-col items-center justify-center">
+                <div class="absolute top-0 glass px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-white/50">
+                    {{ otherActive ? 'Druhý je připraven' : 'Čekáme na sebe' }}
+                </div>
+
+                <div class="w-full h-full flex flex-col items-center justify-center cursor-pointer"
+                     @touchstart.prevent="startTouch" @touchend.prevent="endTouch"
+                     @mousedown="startTouch" @mouseup="endTouch">
+                    <div :class="['emoji-main', { 
+                        'active-emoji glow-yellow': amIActive && mode==='highfive',
+                        'active-emoji heart-pulse glow-red': amIActive && mode==='hug',
+                        'active-emoji glow-pink': amIActive && mode==='kiss'
+                    }]">
+                        {{ mode === 'highfive' ? '✋' : (mode === 'hug' ? '❤️' : '💋') }}
+                    </div>
+                    
+                    <p class="mt-16 text-[12px] font-bold uppercase tracking-[0.5em] opacity-20 text-center px-10 leading-relaxed max-w-xs">
+                        {{ mode === 'hug' ? 'Přilož telefon k srdci' : (mode === 'kiss' ? 'Kiss' : 'Plácni si!') }}
+                    </p>
+                </div>
+            </main>
+
+        </transition>
+    </div>
 
     <!-- Success Overlays -->
-    <transition name="fade">
-        <div v-if="success" class="fixed inset-0 z-[100] flex flex-col items-center justify-center glass shadow-2xl" 
+    <transition name="fade-overlay">
+        <div v-if="success" class="fixed inset-0 z-[100] flex flex-col items-center justify-center glass" 
              :class="{'bg-yellow-400/95': mode==='highfive', 'bg-red-600/95': mode==='hug', 'bg-pink-600/95': mode==='kiss'}">
             
             <div v-if="mode === 'highfive'" class="slap-container text-black">
-                <span class="text-[120px] hand-left">🫷</span>
-                <span class="text-[120px] hand-right">🫷</span>
+                <span class="text-[140px] hand-left">🫷</span>
+                <span class="text-[140px] hand-right">🫷</span>
             </div>
 
             <div v-if="mode === 'hug'" class="flex flex-col items-center text-white">
-                <span class="text-[10rem] heart-pulse">❤️</span>
-                <h2 class="text-4xl font-black mt-8 italic uppercase tracking-tighter">HUG</h2>
+                <span class="text-[11rem] heart-pulse drop-shadow-2xl">❤️</span>
+                <h2 class="text-5xl font-black mt-10 italic uppercase tracking-tighter">HUG</h2>
             </div>
 
             <div v-if="mode === 'kiss'" class="flex flex-col items-center text-white">
-                <span class="text-[10rem] kiss-anim">💋</span>
-                <h2 class="text-4xl font-black mt-8 italic uppercase">Mwah!</h2>
+                <span class="text-[11rem] kiss-anim drop-shadow-2xl">💋</span>
+                <h2 class="text-5xl font-black mt-10 italic uppercase tracking-widest">Mwah!</h2>
             </div>
         </div>
     </transition>
 
-    <footer class="w-full text-center pb-2 opacity-10 text-[7px] uppercase tracking-widest font-black z-50">
-        režim {{ mode }} aktivní
+    <footer class="w-full text-center pb-4 opacity-10 text-[8px] uppercase tracking-[0.5em] font-black z-50">
+        Režim {{ mode || 'volba' }}
     </footer>
 
 </div>
 
 <script>
-    // Registrace Service Workera
+    // Robustnější Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             const swCode = `
-                self.addEventListener('install', (e) => self.skipWaiting());
-                self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
-                self.addEventListener('fetch', (e) => {});
+                self.addEventListener('install', e => self.skipWaiting());
+                self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+                self.addEventListener('fetch', e => {});
             `;
             const blob = new Blob([swCode], { type: 'text/javascript' });
-            const swUrl = URL.createObjectURL(blob);
-            navigator.serviceWorker.register(swUrl)
-                .then(reg => console.log('SW Registered'))
-                .catch(err => console.log('SW Failed', err));
+            navigator.serviceWorker.register(URL.createObjectURL(blob));
         });
     }
 
@@ -244,7 +271,7 @@
                 }
             });
 
-            const joinRoom = () => { if (roomId.value.length >= 2) joined.value = true; };
+            const joinRoom = () => { if (roomId.value.trim().length >= 2) joined.value = true; };
 
             const startTouch = () => {
                 if (success.value) return;
@@ -272,11 +299,11 @@
                 if (hugTimer) return;
                 const pulse = () => {
                     if (!amIActive.value || !otherActive.value) return;
-                    if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
-                    heartbeatInterval = setTimeout(pulse, 1100);
+                    if (navigator.vibrate) navigator.vibrate([70, 50, 70]);
+                    heartbeatInterval = setTimeout(pulse, 1000);
                 };
                 pulse();
-                hugTimer = setInterval(() => { triggerSuccess(); stopTimers(); }, 3500);
+                hugTimer = setInterval(() => { triggerSuccess(); stopTimers(); }, 3200);
             };
 
             const stopTimers = () => {
@@ -292,19 +319,19 @@
                 
                 if (mode.value === 'highfive') {
                     slapSound.play().catch(()=>{});
-                    if (navigator.vibrate) navigator.vibrate([100, 50, 200]);
+                    if (navigator.vibrate) navigator.vibrate([150, 50, 200]);
                 } else if (mode.value === 'kiss') {
                     kissSound.play().catch(()=>{});
-                    if (navigator.vibrate) navigator.vibrate([50, 100, 50]);
+                    if (navigator.vibrate) navigator.vibrate([60, 120, 60]);
                 } else {
-                    if (navigator.vibrate) navigator.vibrate([800]);
+                    if (navigator.vibrate) navigator.vibrate([1000]);
                 }
 
                 setTimeout(() => {
                     success.value = false;
                     amIActive.value = false;
                     socket.emit('hand_state', { room: roomId.value, userId: socket.id, active: false });
-                }, 2000);
+                }, 2500);
             };
 
             return { mode, connected, joined, roomId, amIActive, otherActive, success, joinRoom, startTouch, endTouch };
