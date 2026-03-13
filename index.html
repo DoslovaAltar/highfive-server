@@ -5,11 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My lovie ✋❤️💋</title>
     
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="data:application/manifest+json;base64,ewogICJkZWZhdWx0X2xvY2FsZSI6ICJjcyIsCiAgIm5hbWUiOiAiTXkgbG92aWUiLAogICJzaG9ydF9uYW1lIjogIk15IGxvdmllIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYzBjMGMiLAogICJ0aGVtZV9jb2xvciI6ICIjMGMwYzBjIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9lbW9qaWNZG4uaW8vaW1nL2FwcGxlLzE0LjQvaGVhcnQtc3VpdC5wbmciLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXNrYWJsZSIKICAgIH0KICBdCn0=">
+    <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0c0c0c">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="My lovie">
+    
+    <!-- Web Manifest s ikonou 💖 -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJkZWZhdWx0X2xvY2FsZSI6ICJjcyIsCiAgIm5hbWUiOiAiTXkgbG92aWUiLAogICJzaG9ydF9uYW1lIjogIk15IGxvdmllIiwKICAic3RhcnRfdXJsIjogIi4vIiwKICAic2NvcGUiOiAiLi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzBjMGMwYyIsCiAgInRoZW1lX2NvbG9yIjogIiMwYzBjMGMiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWwsPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48dGV4dCB5PSIuOWVtIiBmb250LXNpemU9IjkwIj7wnp+GPC90ZXh0Pjwvc3ZnPiIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXNrYWJsZSIKICAgIH0KICBdCn0=">
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
@@ -133,7 +137,7 @@
     </main>
 
     <!-- Login -->
-    <main v-else-if="!joined" class="flex-1 flex flex-col items-center justify-center w-full max-w-xs z-10">
+    <main v-else-if="!joined" class="flex-1 flex flex-col items-center justify-center w-full max-xs z-10">
         <button @click="mode = null" class="absolute top-20 left-8 text-[10px] font-black opacity-30 tracking-widest uppercase">← Zpět</button>
         <div class="glass w-full p-8 rounded-[2.5rem] flex flex-col items-center gap-6">
             <input v-model="roomId" maxlength="6" placeholder="KÓD" class="w-full bg-white/5 border-none p-5 rounded-2xl text-center text-4xl font-black tracking-[0.3em] outline-none focus:ring-1 focus:ring-white/20">
@@ -196,12 +200,20 @@
 </div>
 
 <script>
-    // Registrace Service Workera pro instalovatelnost (PWA)
+    // Registrace Service Workera
     if ('serviceWorker' in navigator) {
-        const swCode = `self.addEventListener('fetch', (event) => { event.respondWith(fetch(event.request)); });`;
-        const blob = new Blob([swCode], { type: 'text/javascript' });
-        const swUrl = URL.createObjectURL(blob);
-        navigator.serviceWorker.register(swUrl);
+        window.addEventListener('load', () => {
+            const swCode = `
+                self.addEventListener('install', (e) => self.skipWaiting());
+                self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+                self.addEventListener('fetch', (e) => {});
+            `;
+            const blob = new Blob([swCode], { type: 'text/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            navigator.serviceWorker.register(swUrl)
+                .then(reg => console.log('SW Registered'))
+                .catch(err => console.log('SW Failed', err));
+        });
     }
 
     const { createApp, ref } = Vue;
